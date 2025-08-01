@@ -1,0 +1,63 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Setup Dart
+      uses: dart-lang/setup-dart@v1
+      with:
+        sdk: stable
+    
+    - name: Install dependencies
+      run: dart pub get
+    
+    - name: Verify formatting
+      run: dart format --output=none --set-exit-if-changed .
+    
+    - name: Analyze project source
+      run: dart analyze
+    
+    - name: Run tests
+      run: dart test
+    
+    - name: Test CLI functionality
+      run: |
+        mkdir -p /tmp/test_fli
+        cd /tmp/test_fli
+        dart run $GITHUB_WORKSPACE/bin/fli.dart --help
+        dart run $GITHUB_WORKSPACE/bin/fli.dart templates
+        dart run $GITHUB_WORKSPACE/bin/fli.dart create test_project --template=basic
+        ls -la test_project/
+        dart run $GITHUB_WORKSPACE/bin/fli.dart create feature_project --template=feature_driven
+        ls -la feature_project/
+
+  publish:
+    needs: test
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/v')
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Setup Dart
+      uses: dart-lang/setup-dart@v1
+      with:
+        sdk: stable
+    
+    - name: Install dependencies
+      run: dart pub get
+    
+    - name: Publish to pub.dev
+      run: dart pub publish --force
+      env:
+        PUB_CREDENTIALS: ${{ secrets.PUB_CREDENTIALS }}

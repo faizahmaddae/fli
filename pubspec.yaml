@@ -1,0 +1,24 @@
+name: fli
+description: A CLI tool for generating clean and standardized Flutter project structures
+version: 1.0.0
+homepage: https://github.com/faizahmaddae/fli
+repository: https://github.com/faizahmaddae/fli
+issue_tracker: https://github.com/faizahmaddae/fli/issues
+documentation: https://github.com/faizahmaddae/fli#readme
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+dependencies:
+  args: ^2.4.2
+  path: ^1.9.0
+  yaml: ^3.1.2
+  mason: ^0.1.1
+  mason_cli: ^0.1.2
+
+dev_dependencies:
+  test: ^1.24.0
+  lints: ^3.0.0
+
+executables:
+  fli:
