@@ -5,44 +5,44 @@ import '../commands/templates_command.dart';
 import '../utils/logger.dart';
 
 /// Runs the fli CLI tool with the provided command-line arguments.
-/// 
+///
 /// This is the main entry point for the fli command-line interface. It parses
 /// the provided arguments and executes the appropriate commands.
-/// 
+///
 /// ## Supported Commands
-/// 
+///
 /// - **create**: Creates a new Flutter project with a specified template
 /// - **templates**: Lists all available project templates
 /// - **--help**: Shows help information
 /// - **--version**: Shows version information
-/// 
+///
 /// ## Arguments
-/// 
+///
 /// - [arguments]: A list of command-line arguments to parse and execute
-/// 
+///
 /// ## Examples
-/// 
+///
 /// ```dart
 /// // Create a basic project
 /// runFli(['create', 'my_app', '--template=basic']);
-/// 
+///
 /// // List templates
 /// runFli(['templates']);
-/// 
+///
 /// // Show help
 /// runFli(['--help']);
-/// 
+///
 /// // Show version
 /// runFli(['--version']);
 /// ```
-/// 
+///
 /// ## Exit Codes
-/// 
+///
 /// - **0**: Success
 /// - **1**: Error (invalid arguments, unknown command, or execution failure)
-/// 
+///
 /// ## Throws
-/// 
+///
 /// The function handles all exceptions internally and exits with appropriate
 /// error codes rather than throwing exceptions to the caller.
 void runFli(List<String> arguments) async {
