@@ -1,15 +1,15 @@
 class ProjectConfig {
-  final String name;
-  final String template;
-  final String outputDirectory;
-  final bool isInteractive;
-
   const ProjectConfig({
     required this.name,
     required this.template,
     required this.outputDirectory,
     this.isInteractive = false,
   });
+
+  final String name;
+  final String template;
+  final String outputDirectory;
+  final bool isInteractive;
 
   String get projectPath => '$outputDirectory/$name';
 

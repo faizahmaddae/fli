@@ -327,7 +327,7 @@ class CustomButton extends StatelessWidget {
     final widgetTestContent = '''
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:${projectName}/app.dart';
+import 'package:$projectName/app.dart';
 
 void main() {
   testWidgets('App smoke test', (WidgetTester tester) async {
@@ -346,7 +346,7 @@ void main() {
     // Create unit test example
     final unitTestContent = '''
 import 'package:flutter_test/flutter_test.dart';
-import 'package:${projectName}/core/utils/app_utils.dart';
+import 'package:$projectName/core/utils/app_utils.dart';
 
 void main() {
   group('AppUtils', () {
