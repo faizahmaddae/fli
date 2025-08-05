@@ -1,0 +1,27 @@
+include: package:lints/recommended.yaml
+
+linter:
+  rules:
+    # Code style
+    prefer_single_quotes: true
+    sort_constructors_first: true
+    sort_unnamed_constructors_first: true
+    always_use_package_imports: false  # Allow relative imports for internal files
+    prefer_const_constructors: true
+    prefer_const_literals_to_create_immutables: true
+    sized_box_for_whitespace: true
+    use_key_in_widget_constructors: true
+    
+    # Best practices
+    avoid_empty_else: true
+    cancel_subscriptions: true
+    close_sinks: true
+    empty_catches: false  # Allow empty catches with comment
+    hash_and_equals: true
+    test_types_in_equals: true
+    throw_in_finally: true
+    unrelated_type_equality_checks: true
+    valid_regexps: true
+    
+    # Allow print statements in CLI tools
+    avoid_print: false
