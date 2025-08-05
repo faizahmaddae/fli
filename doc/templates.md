@@ -55,7 +55,7 @@ my_app/
 ├── test/
 │   ├── widget_test/                 # Widget tests
 │   └── unit_test/                   # Unit tests
-└── docs/
+└── doc/
     └── README.md                    # Project documentation
 ```
 
@@ -150,7 +150,7 @@ my_app/
 ├── test/
 │   ├── features/                    # Feature-specific tests
 │   └── shared/                      # Shared component tests
-└── docs/
+└── doc/
     ├── features/                    # Feature documentation
     └── architecture.md              # Architecture guide
 ```
@@ -480,7 +480,7 @@ fli templates
 ### Next Steps
 
 1. **Explore the generated structure**
-2. **Read the feature documentation** in `docs/`
+2. **Read the feature documentation** in `doc/`
 3. **Run the generated tests**: `flutter test`
 4. **Start building your features**
 5. **Follow the architectural patterns** established by the template

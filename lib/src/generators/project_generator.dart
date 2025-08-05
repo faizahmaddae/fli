@@ -326,7 +326,7 @@ flutter build web --release
 
 - [fli Documentation](https://github.com/faizahmaddae/fli#readme)
 - [Flutter Documentation](https://flutter.dev/docs)
-- [Template Architecture Guide](https://github.com/faizahmaddae/fli/blob/main/docs/templates.md#${config.template}-template)
+- [Template Architecture Guide](https://github.com/faizahmaddae/fli/blob/main/doc/templates.md#${config.template}-template)
 
 ## 🤝 Contributing
 

@@ -146,7 +146,7 @@ fli create <name> --template=provider_pattern    # Provider pattern
 
 **Contribute to documentation:**
 1. Fork the repository
-2. Edit the relevant `.md` files in the `docs/` folder
+2. Edit the relevant `.md` files in the `doc/` folder
 3. Submit a pull request
 
 ### Template Enhancements

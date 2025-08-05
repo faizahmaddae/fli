@@ -98,7 +98,7 @@ my_app/
 │   ├── images/
 │   ├── icons/
 │   └── fonts/
-└── docs/
+└── doc/
 ```
 
 ## 🎯 Commands
@@ -112,23 +112,24 @@ my_app/
 
 For comprehensive documentation, examples, and architectural guides:
 
-### 📋 [Complete Template Documentation](./docs/README.md)
-- **[Template Guide](./docs/templates.md)** - Detailed overview of all templates with structure explanations
-- **[Architecture Guide](./docs/architecture.md)** - Design patterns, conventions, and best practices
-- **[Usage Examples](./docs/examples.md)** - Real-world scenarios and practical implementation examples
+### 📋 [Complete Template Documentation](./doc/README.md)
+- **[Template Guide](./doc/templates.md)** - Detailed overview of all templates with structure explanations
+- **[Architecture Guide](./doc/architecture.md)** - Design patterns, conventions, and best practices
+- **[Usage Examples](./doc/examples.md)** - Real-world scenarios and practical implementation examples
 
-### 🚀 Quick Links
-- **[Basic Template](./docs/templates.md#basic-template)** - Simple apps and prototypes
-- **[Feature Driven](./docs/templates.md#feature-driven-template)** - Scalable feature-based architecture  
-- **[Clean Architecture](./docs/templates.md#clean-architecture-template)** - Enterprise-level applications
-- **[State Management](./docs/templates.md#bloc-pattern-template)** - BLoC and Provider patterns
+## 🚀 Templates
+
+- **[Basic Template](./doc/templates.md#basic-template)** - Simple apps and prototypes
+- **[Feature Driven](./doc/templates.md#feature-driven-template)** - Scalable feature-based architecture  
+- **[Clean Architecture](./doc/templates.md#clean-architecture-template)** - Enterprise-level applications
+- **[State Management](./doc/templates.md#bloc-pattern-template)** - BLoC and Provider patterns
 
 ## 🤝 Contributing
 
 We welcome contributions! Please feel free to submit issues and pull requests.
 
 ### Contributing to Documentation
-Found something unclear or want to add examples? Check out our [documentation contribution guide](./docs/README.md#contributing).
+Found something unclear or want to add examples? Check out our [documentation contribution guide](./doc/README.md#contributing).
 
 ## 📄 License
 

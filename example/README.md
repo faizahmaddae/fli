@@ -37,7 +37,7 @@ my_basic_app/
 │   ├── images/
 │   ├── icons/
 │   └── fonts/
-├── docs/
+├── doc/
 ├── pubspec.yaml
 ├── analysis_options.yaml
 ├── .gitignore
