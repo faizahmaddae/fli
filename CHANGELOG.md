@@ -1,9 +1,16 @@
 ## Changelog
 
-All notable changes to this- Comprehensive documentation in `doc/` directoryproject will be documented in this file.
+All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [1.1.1] - 2025-08-05
+
+### 🔧 Fixed
+- **Documentation Links**: Fixed broken internal documentation links after renaming `docs/` to `doc/` directory
+  - Updated all references in README.md, CHANGELOG.md, example documentation, and template files
+  - Ensures all documentation links work correctly on GitHub and pub.dev
 
 ## [1.1.0] - 2025-08-05
 

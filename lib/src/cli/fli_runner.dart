@@ -157,5 +157,5 @@ Run "fli <command> --help" for more information about a command.
 }
 
 void _showVersion() {
-  print('fli version 1.1.0');
+  print('fli version 1.1.1');
 }
