@@ -9,6 +9,12 @@ documentation: https://github.com/faizahmaddae/fli#readme
 environment:
   sdk: '>=3.0.0 <4.0.0'
 
+# Platform support - CLI tools are designed for native platforms
+platforms:
+  linux:
+  macos:
+  windows:
+
 dependencies:
   args: ^2.4.2
   path: ^1.9.0
