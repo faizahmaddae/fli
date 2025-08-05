@@ -65,7 +65,7 @@ class BasicTemplate extends ProjectTemplate {
   Future<void> _createMainFile(String projectDir, String projectName) async {
     final content = '''
 import 'package:flutter/material.dart';
-import 'app.dart';
+import 'package:${_snakeCase(projectName)}/app.dart';
 
 void main() {
   runApp(const MyApp());
@@ -77,10 +77,11 @@ void main() {
 
   Future<void> _createAppFile(String projectDir, String projectName) async {
     final className = _pascalCase(projectName);
+    final packageName = _snakeCase(projectName);
     final content = '''
 import 'package:flutter/material.dart';
-import 'core/theme/app_theme.dart';
-import 'screens/home/home_screen.dart';
+import 'package:$packageName/core/theme/app_theme.dart';
+import 'package:$packageName/screens/home/home_screen.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -101,10 +102,13 @@ class MyApp extends StatelessWidget {
   }
 
   Future<void> _createCoreFiles(String projectDir) async {
+    final projectName = path.basename(projectDir);
+    final packageName = _snakeCase(projectName);
+    
     // Create app theme
     final themeContent = '''
 import 'package:flutter/material.dart';
-import '../constants/app_colors.dart';
+import 'package:$packageName/core/constants/app_colors.dart';
 
 class AppTheme {
   static ThemeData get lightTheme {
@@ -223,6 +227,9 @@ class AppUtils {
   }
 
   Future<void> _createScreenFiles(String projectDir) async {
+    final projectName = path.basename(projectDir);
+    final packageName = _snakeCase(projectName);
+    
     // Create home screen directory
     await Directory(path.join(projectDir, 'lib', 'screens', 'home'))
         .create(recursive: true);
@@ -230,8 +237,8 @@ class AppUtils {
     // Create home screen
     final homeScreenContent = '''
 import 'package:flutter/material.dart';
-import '../../core/constants/app_strings.dart';
-import '../../widgets/custom_button.dart';
+import 'package:$packageName/core/constants/app_strings.dart';
+import 'package:$packageName/widgets/custom_button.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -266,6 +273,8 @@ class HomeScreen extends StatelessWidget {
   
   static void _onGetStartedPressed() {
     // TODO: Implement get started functionality
+    // Using print for debugging - remove in production
+    // ignore: avoid_print
     print('Get Started pressed!');
   }
 }
@@ -367,5 +376,9 @@ void main() {
         .map((word) =>
             word.isEmpty ? '' : word[0].toUpperCase() + word.substring(1))
         .join('');
+  }
+
+  String _snakeCase(String input) {
+    return input.toLowerCase();
   }
 }

@@ -1,6 +1,6 @@
 name: fli
 description: A native CLI tool for generating clean and standardized Flutter project structures. Designed for command-line use on desktop platforms.
-version: 1.0.1
+version: 1.1.0
 homepage: https://github.com/faizahmaddae/fli
 repository: https://github.com/faizahmaddae/fli
 issue_tracker: https://github.com/faizahmaddae/fli/issues

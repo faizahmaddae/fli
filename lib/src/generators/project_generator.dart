@@ -13,49 +13,101 @@ class ProjectGenerator {
       throw Exception('Directory "${config.name}" already exists');
     }
 
-    Logger.step('Creating project directory...');
-    await projectDir.create(recursive: true);
+    Logger.step('Creating Flutter project...');
+    await _createFlutterProject(config);
 
-    Logger.step('Generating project structure...');
+    Logger.step('Cleaning up default Flutter files...');
+    await _cleanupDefaultFlutterFiles(config);
+
+    Logger.step('Applying template structure...');
     final template = TemplateFactory.getTemplate(config.template);
     await template.generate(config);
 
-    Logger.step('Creating configuration files...');
-    await _createConfigFiles(config);
+    Logger.step('Updating configuration files...');
+    await _updateConfigFiles(config);
 
-    Logger.step('Setting up assets directory...');
-    await _createAssetsStructure(config);
+    Logger.step('Setting up enhanced assets structure...');
+    await _enhanceAssetsStructure(config);
 
-    Logger.success('Project structure created successfully!');
+    Logger.step('Running flutter pub get...');
+    await _runFlutterPubGet(config);
+
+    Logger.success('Project created and ready to use!');
   }
 
-  Future<void> _createConfigFiles(ProjectConfig config) async {
+  Future<void> _createFlutterProject(ProjectConfig config) async {
+    final parentDir = Directory(config.outputDirectory);
+    
+    // Run flutter create command
+    final result = await Process.run(
+      'flutter',
+      [
+        'create',
+        '--project-name=${config.name}',
+        '--platforms=android,ios,web,windows,macos,linux',
+        config.name,
+      ],
+      workingDirectory: parentDir.path,
+    );
+
+    if (result.exitCode != 0) {
+      throw Exception('Failed to create Flutter project: ${result.stderr}');
+    }
+
+    Logger.info('✓ Flutter project initialized successfully');
+  }
+
+  Future<void> _cleanupDefaultFlutterFiles(ProjectConfig config) async {
+    final projectDir = config.projectPath;
+    
+    // Remove default main.dart (will be replaced by template)
+    final defaultMain = File(path.join(projectDir, 'lib', 'main.dart'));
+    if (await defaultMain.exists()) {
+      await defaultMain.delete();
+    }
+    
+    // Remove default test file (will be replaced by template-specific tests)
+    final defaultTest = File(path.join(projectDir, 'test', 'widget_test.dart'));
+    if (await defaultTest.exists()) {
+      await defaultTest.delete();
+    }
+    
+    // Remove example README content from test directory
+    final testDir = Directory(path.join(projectDir, 'test'));
+    if (await testDir.exists()) {
+      await for (final entity in testDir.list()) {
+        if (entity is File && entity.path.endsWith('_test.dart')) {
+          // Keep integration test folder if it exists, remove other default tests
+          if (!entity.path.contains('integration_test')) {
+            await entity.delete();
+          }
+        }
+      }
+    }
+    
+    Logger.info('✓ Default Flutter files cleaned up');
+  }
+
+  Future<void> _updateConfigFiles(ProjectConfig config) async {
     final projectDir = config.projectPath;
 
-    // Create pubspec.yaml
-    final pubspecContent = _generatePubspecContent(config);
-    await File(path.join(projectDir, 'pubspec.yaml'))
-        .writeAsString(pubspecContent);
+    // Update pubspec.yaml with template-specific dependencies
+    await _updatePubspecFile(config);
 
-    // Create analysis_options.yaml
+    // Update analysis_options.yaml with enhanced linting
     final analysisOptionsContent = _generateAnalysisOptionsContent();
     await File(path.join(projectDir, 'analysis_options.yaml'))
         .writeAsString(analysisOptionsContent);
 
-    // Create .gitignore
-    final gitignoreContent = _generateGitignoreContent();
-    await File(path.join(projectDir, '.gitignore'))
-        .writeAsString(gitignoreContent);
-
-    // Create README.md
+    // Update README.md with template-specific information
     final readmeContent = _generateReadmeContent(config);
     await File(path.join(projectDir, 'README.md')).writeAsString(readmeContent);
   }
 
-  Future<void> _createAssetsStructure(ProjectConfig config) async {
+  Future<void> _enhanceAssetsStructure(ProjectConfig config) async {
     final assetsDir = path.join(config.projectPath, 'assets');
 
-    // Create asset directories
+    // Create enhanced asset directories
     await Directory(path.join(assetsDir, 'images')).create(recursive: true);
     await Directory(path.join(assetsDir, 'icons')).create(recursive: true);
     await Directory(path.join(assetsDir, 'fonts')).create(recursive: true);
@@ -66,41 +118,124 @@ class ProjectGenerator {
     await File(path.join(assetsDir, 'fonts', '.gitkeep')).writeAsString('');
   }
 
-  String _generatePubspecContent(ProjectConfig config) {
-    return '''
-name: ${config.name}
-description: A new Flutter project created with fli.
-publish_to: 'none'
+  Future<void> _runFlutterPubGet(ProjectConfig config) async {
+    final result = await Process.run(
+      'flutter',
+      ['pub', 'get'],
+      workingDirectory: config.projectPath,
+    );
 
-version: 1.0.0+1
+    if (result.exitCode != 0) {
+      Logger.warning('flutter pub get completed with warnings: ${result.stderr}');
+    } else {
+      Logger.info('✓ Dependencies installed successfully');
+    }
+  }
 
-environment:
-  sdk: '>=3.0.0 <4.0.0'
-
-dependencies:
-  flutter:
-    sdk: flutter
-  cupertino_icons: ^1.0.6
-
-dev_dependencies:
-  flutter_test:
-    sdk: flutter
-  flutter_lints: ^3.0.0
-
-flutter:
-  uses-material-design: true
-  
-  assets:
-    - assets/images/
-    - assets/icons/
+  Future<void> _updatePubspecFile(ProjectConfig config) async {
+    final pubspecPath = path.join(config.projectPath, 'pubspec.yaml');
+    final existingContent = await File(pubspecPath).readAsString();
     
-  # fonts:
-  #   - family: CustomFont
-  #     fonts:
-  #       - asset: assets/fonts/CustomFont-Regular.ttf
-  #       - asset: assets/fonts/CustomFont-Bold.ttf
-  #         weight: 700
-''';
+    // Parse existing pubspec and enhance it with template-specific dependencies
+    final enhancedContent = _enhancePubspecContent(existingContent, config);
+    await File(pubspecPath).writeAsString(enhancedContent);
+  }
+
+  String _enhancePubspecContent(String existingContent, ProjectConfig config) {
+    // Parse the existing pubspec and add template-specific enhancements
+    final lines = existingContent.split('\n');
+    final enhancedLines = <String>[];
+    bool inDependencies = false;
+    bool inDevDependencies = false;
+    bool inFlutter = false;
+    bool hasAddedAssets = false;
+
+    for (int i = 0; i < lines.length; i++) {
+      final line = lines[i];
+      
+      if (line.startsWith('dependencies:')) {
+        inDependencies = true;
+        inDevDependencies = false;
+        inFlutter = false;
+        enhancedLines.add(line);
+        continue;
+      } else if (line.startsWith('dev_dependencies:')) {
+        inDependencies = false;
+        inDevDependencies = true;
+        inFlutter = false;
+        enhancedLines.add(line);
+        continue;
+      } else if (line.startsWith('flutter:')) {
+        inDependencies = false;
+        inDevDependencies = false;
+        inFlutter = true;
+        enhancedLines.add(line);
+        continue;
+      } else if (line.trim().isEmpty || !line.startsWith(' ')) {
+        inDependencies = false;
+        inDevDependencies = false;
+        if (!line.startsWith('flutter:')) {
+          inFlutter = false;
+        }
+      }
+
+      // Add template-specific dependencies
+      if (inDependencies && line.contains('cupertino_icons:')) {
+        enhancedLines.add(line);
+        // Add common dependencies based on template
+        enhancedLines.addAll(_getTemplateDependencies(config.template));
+      } else if (inDevDependencies && line.contains('flutter_lints:')) {
+        enhancedLines.add('  flutter_lints: ^3.0.0');
+        // Add common dev dependencies
+        enhancedLines.add('  build_runner: ^2.4.7');
+      } else if (inFlutter && line.trim() == 'uses-material-design: true' && !hasAddedAssets) {
+        enhancedLines.add(line);
+        enhancedLines.add('');
+        enhancedLines.add('  assets:');
+        enhancedLines.add('    - assets/images/');
+        enhancedLines.add('    - assets/icons/');
+        enhancedLines.add('');
+        enhancedLines.add('  # fonts:');
+        enhancedLines.add('  #   - family: CustomFont');
+        enhancedLines.add('  #     fonts:');
+        enhancedLines.add('  #       - asset: assets/fonts/CustomFont-Regular.ttf');
+        enhancedLines.add('  #       - asset: assets/fonts/CustomFont-Bold.ttf');
+        enhancedLines.add('  #         weight: 700');
+        hasAddedAssets = true;
+      } else {
+        enhancedLines.add(line);
+      }
+    }
+
+    return enhancedLines.join('\n');
+  }
+
+  List<String> _getTemplateDependencies(String template) {
+    switch (template) {
+      case 'bloc_pattern':
+        return [
+          '  flutter_bloc: ^8.1.3',
+          '  equatable: ^2.0.5',
+        ];
+      case 'provider_pattern':
+        return [
+          '  provider: ^6.1.1',
+        ];
+      case 'clean_architecture':
+        return [
+          '  get_it: ^7.6.4',
+          '  dartz: ^0.10.1',
+        ];
+      case 'feature_driven':
+        return [
+          '  go_router: ^12.1.3',
+        ];
+      default:
+        return [
+          '  http: ^1.1.0',
+          '  shared_preferences: ^2.2.2',
+        ];
+    }
   }
 
   String _generateAnalysisOptionsContent() {
@@ -121,98 +256,195 @@ linter:
 ''';
   }
 
-  String _generateGitignoreContent() {
-    return '''
-# Miscellaneous
-*.class
-*.log
-*.pyc
-*.swp
-.DS_Store
-.atom/
-.buildlog/
-.history
-.svn/
-migrate_working_dir/
-
-# IntelliJ related
-*.iml
-*.ipr
-*.iws
-.idea/
-
-# The .vscode folder contains launch configuration and tasks you configure in
-# VS Code which you may wish to be included in version control, so this line
-# is commented out by default.
-#.vscode/
-
-# Flutter/Dart/Pub related
-**/doc/api/
-**/ios/Flutter/.last_build_id
-.dart_tool/
-.flutter-plugins
-.flutter-plugins-dependencies
-.packages
-.pub-cache/
-.pub/
-/build/
-
-# Symbolication related
-app.*.symbols
-
-# Obfuscation related
-app.*.map.json
-
-# Android Studio will place build artifacts here
-/android/app/debug
-/android/app/profile
-/android/app/release
-''';
-  }
-
   String _generateReadmeContent(ProjectConfig config) {
+    final templateDescription = _getTemplateDescription(config.template);
+    
     return '''
 # ${config.name}
 
-A new Flutter project created with fli.
+A Flutter project created with **fli** using the **${config.template}** template.
 
-## Getting Started
+## 🏗️ Architecture
 
-This project uses the **${config.template}** template structure for clean and maintainable code.
+This project follows the **${config.template}** architecture pattern for clean, maintainable, and scalable code.
+
+$templateDescription
+
+## 🚀 Getting Started
 
 ### Prerequisites
-
 - Flutter SDK (>=3.0.0)
 - Dart SDK (>=3.0.0)
 
 ### Installation
+1. Navigate to the project directory: `cd ${config.name}`
+2. Install dependencies: `flutter pub get` 
+3. Run the app: `flutter run`
 
-1. Clone this repository
-2. Run `flutter pub get` to install dependencies
-3. Run `flutter run` to start the app
+### Available Commands
+- `flutter run` - Run the app in debug mode
+- `flutter build` - Build the app for release
+- `flutter test` - Run all tests
+- `flutter analyze` - Analyze code for issues
 
-### Project Structure
+## 📁 Project Structure
 
-This project follows the ${config.template} architecture pattern for better organization and scalability.
+This project is organized following the **${config.template}** pattern:
 
-### Features
+${_getProjectStructureDescription(config.template)}
 
-- Clean architecture
-- Proper folder structure
-- Linting rules configured
-- Ready for development
+## 🧪 Testing
 
-## Contributing
+Run tests with:
+```bash
+flutter test
+```
+
+## 🚀 Deployment
+
+### Android
+```bash
+flutter build apk --release
+```
+
+### iOS
+```bash
+flutter build ios --release
+```
+
+### Web
+```bash
+flutter build web --release
+```
+
+## 📚 Learn More
+
+- [fli Documentation](https://github.com/faizahmaddae/fli#readme)
+- [Flutter Documentation](https://flutter.dev/docs)
+- [Template Architecture Guide](https://github.com/faizahmaddae/fli/blob/main/docs/templates.md#${config.template}-template)
+
+## 🤝 Contributing
 
 1. Fork the repository
-2. Create your feature branch
-3. Commit your changes
-4. Push to the branch
+2. Create a feature branch: `git checkout -b feature-name`
+3. Commit changes: `git commit -am 'Add feature'`
+4. Push to branch: `git push origin feature-name`
 5. Create a Pull Request
 
-## License
+---
 
-This project is licensed under the MIT License.
+Created with ❤️ using [fli](https://pub.dev/packages/fli) v1.0.1
 ''';
+  }
+
+  String _getTemplateDescription(String template) {
+    switch (template) {
+      case 'basic':
+        return '''
+### Basic Template Features:
+- ✅ Clean folder organization
+- ✅ Theme management (light/dark mode)
+- ✅ Constant management
+- ✅ Basic service layer
+- ✅ Widget organization
+- ✅ Test structure
+
+Perfect for small to medium applications with straightforward requirements.''';
+      
+      case 'feature_driven':
+        return '''
+### Feature Driven Template Features:
+- ✅ Feature-based organization
+- ✅ Scalable architecture
+- ✅ Shared component system
+- ✅ Service layer separation
+- ✅ Clean navigation structure
+- ✅ Modular testing approach
+
+Ideal for medium to large applications with distinct feature sets.''';
+      
+      case 'clean_architecture':
+        return '''
+### Clean Architecture Template Features:
+- ✅ Dependency inversion principle
+- ✅ Repository pattern
+- ✅ Use case pattern
+- ✅ Entity-based domain modeling
+- ✅ Error handling layer
+- ✅ Comprehensive testing structure
+
+Best for enterprise applications with complex business logic.''';
+      
+      case 'bloc_pattern':
+        return '''
+### BLoC Pattern Template Features:
+- ✅ BLoC state management
+- ✅ Event-driven architecture
+- ✅ Repository pattern integration
+- ✅ Stream-based data flow
+- ✅ Comprehensive testing setup
+- ✅ DevTools integration
+
+Perfect for applications with complex state management needs.''';
+      
+      case 'provider_pattern':
+        return '''
+### Provider Pattern Template Features:
+- ✅ Provider-based state management
+- ✅ Consumer widget pattern
+- ✅ ChangeNotifier implementation
+- ✅ Dependency injection
+- ✅ Multi-provider setup
+- ✅ Testing utilities
+
+Great for medium complexity applications with simpler state management.''';
+      
+      default:
+        return 'A well-structured Flutter application with best practices built-in.';
+    }
+  }
+
+  String _getProjectStructureDescription(String template) {
+    switch (template) {
+      case 'basic':
+        return '''
+```
+lib/
+├── core/                    # Shared infrastructure
+│   ├── constants/          # App-wide constants
+│   ├── theme/             # Theming and styling
+│   └── utils/             # Helper functions
+├── screens/               # Application screens
+├── widgets/               # Reusable UI components
+├── services/              # Business logic and API calls
+└── main.dart              # Application entry point
+```''';
+      
+      case 'feature_driven':
+        return '''
+```
+lib/
+├── core/                    # Shared infrastructure
+├── features/                # Feature modules
+│   └── [feature_name]/
+│       ├── presentation/    # UI layer
+│       ├── domain/         # Business logic
+│       └── data/           # Data layer
+├── shared/                  # Shared components
+│   ├── widgets/            # Common UI components
+│   └── services/           # Shared business logic
+└── main.dart               # Application entry point
+```''';
+      
+      default:
+        return '''
+```
+lib/
+├── [template_structure]/    # Template-specific organization
+└── main.dart               # Application entry point
+```
+
+See the template documentation for detailed structure information.''';
+    }
   }
 }

@@ -38,13 +38,15 @@ curl -fsSL https://raw.githubusercontent.com/faizahmaddae/fli/main/install.sh | 
 
 ## 🛠️ Usage
 
-### Generate a new Flutter project with clean structure
+### Generate a new Flutter project (Complete & Ready to Use!)
 
 ```bash
 fli create my_app
 ```
 
-### Interactive mode with options
+**That's it!** Your Flutter project is completely ready to use. No need to run `flutter create .` or `flutter pub get` manually.
+
+### Interactive mode with template selection
 
 ```bash
 fli create my_app --interactive
@@ -55,6 +57,14 @@ fli create my_app --interactive
 ```bash
 fli create my_app --template=clean_architecture
 ```
+
+### What you get out of the box:
+- ✅ **Complete Flutter project** with all platform support
+- ✅ **Template structure applied** with best practices
+- ✅ **Dependencies installed** and ready to use  
+- ✅ **Tests included** and passing
+- ✅ **Documentation generated** with template-specific guides
+- ✅ **Ready to run** with `flutter run`
 
 ### Available templates
 
@@ -98,9 +108,27 @@ my_app/
 - `fli --help` - Show help information
 - `fli --version` - Show version
 
+## 📚 Documentation
+
+For comprehensive documentation, examples, and architectural guides:
+
+### 📋 [Complete Template Documentation](./docs/README.md)
+- **[Template Guide](./docs/templates.md)** - Detailed overview of all templates with structure explanations
+- **[Architecture Guide](./docs/architecture.md)** - Design patterns, conventions, and best practices
+- **[Usage Examples](./docs/examples.md)** - Real-world scenarios and practical implementation examples
+
+### 🚀 Quick Links
+- **[Basic Template](./docs/templates.md#basic-template)** - Simple apps and prototypes
+- **[Feature Driven](./docs/templates.md#feature-driven-template)** - Scalable feature-based architecture  
+- **[Clean Architecture](./docs/templates.md#clean-architecture-template)** - Enterprise-level applications
+- **[State Management](./docs/templates.md#bloc-pattern-template)** - BLoC and Provider patterns
+
 ## 🤝 Contributing
 
 We welcome contributions! Please feel free to submit issues and pull requests.
+
+### Contributing to Documentation
+Found something unclear or want to add examples? Check out our [documentation contribution guide](./docs/README.md#contributing).
 
 ## 📄 License
 
