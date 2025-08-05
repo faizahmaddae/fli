@@ -1,5 +1,5 @@
 name: fli
-description: A native CLI tool for generating clean and standardized Flutter project structures. Designed for command-line use on desktop platforms.
+description: A native CLI tool for generating clean and standardized Flutter project structures. Supports all platforms with optimized functionality for desktop use.
 version: 1.1.0
 homepage: https://github.com/faizahmaddae/fli
 repository: https://github.com/faizahmaddae/fli
@@ -17,11 +17,14 @@ topics:
 environment:
   sdk: '>=3.0.0 <4.0.0'
 
-# This is a CLI tool that requires native platform capabilities
-# Web/WASM compatibility is not applicable for command-line tools
+# This is a CLI tool that supports all platforms
+# Note: While primarily designed for desktop use, it can run on all platforms
 platforms:
+  android:
+  ios:
   linux:
   macos:
+  web:
   windows:
 
 dependencies:

@@ -104,7 +104,7 @@ class MyApp extends StatelessWidget {
   Future<void> _createCoreFiles(String projectDir) async {
     final projectName = path.basename(projectDir);
     final packageName = _snakeCase(projectName);
-    
+
     // Create app theme
     final themeContent = '''
 import 'package:flutter/material.dart';
@@ -229,7 +229,7 @@ class AppUtils {
   Future<void> _createScreenFiles(String projectDir) async {
     final projectName = path.basename(projectDir);
     final packageName = _snakeCase(projectName);
-    
+
     // Create home screen directory
     await Directory(path.join(projectDir, 'lib', 'screens', 'home'))
         .create(recursive: true);

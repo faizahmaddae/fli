@@ -37,7 +37,7 @@ class ProjectGenerator {
 
   Future<void> _createFlutterProject(ProjectConfig config) async {
     final parentDir = Directory(config.outputDirectory);
-    
+
     // Run flutter create command
     final result = await Process.run(
       'flutter',
@@ -59,19 +59,19 @@ class ProjectGenerator {
 
   Future<void> _cleanupDefaultFlutterFiles(ProjectConfig config) async {
     final projectDir = config.projectPath;
-    
+
     // Remove default main.dart (will be replaced by template)
     final defaultMain = File(path.join(projectDir, 'lib', 'main.dart'));
     if (await defaultMain.exists()) {
       await defaultMain.delete();
     }
-    
+
     // Remove default test file (will be replaced by template-specific tests)
     final defaultTest = File(path.join(projectDir, 'test', 'widget_test.dart'));
     if (await defaultTest.exists()) {
       await defaultTest.delete();
     }
-    
+
     // Remove example README content from test directory
     final testDir = Directory(path.join(projectDir, 'test'));
     if (await testDir.exists()) {
@@ -84,7 +84,7 @@ class ProjectGenerator {
         }
       }
     }
-    
+
     Logger.info('✓ Default Flutter files cleaned up');
   }
 
@@ -126,7 +126,8 @@ class ProjectGenerator {
     );
 
     if (result.exitCode != 0) {
-      Logger.warning('flutter pub get completed with warnings: ${result.stderr}');
+      Logger.warning(
+          'flutter pub get completed with warnings: ${result.stderr}');
     } else {
       Logger.info('✓ Dependencies installed successfully');
     }
@@ -135,7 +136,7 @@ class ProjectGenerator {
   Future<void> _updatePubspecFile(ProjectConfig config) async {
     final pubspecPath = path.join(config.projectPath, 'pubspec.yaml');
     final existingContent = await File(pubspecPath).readAsString();
-    
+
     // Parse existing pubspec and enhance it with template-specific dependencies
     final enhancedContent = _enhancePubspecContent(existingContent, config);
     await File(pubspecPath).writeAsString(enhancedContent);
@@ -152,7 +153,7 @@ class ProjectGenerator {
 
     for (int i = 0; i < lines.length; i++) {
       final line = lines[i];
-      
+
       if (line.startsWith('dependencies:')) {
         inDependencies = true;
         inDevDependencies = false;
@@ -188,7 +189,9 @@ class ProjectGenerator {
         enhancedLines.add('  flutter_lints: ^3.0.0');
         // Add common dev dependencies
         enhancedLines.add('  build_runner: ^2.4.7');
-      } else if (inFlutter && line.trim() == 'uses-material-design: true' && !hasAddedAssets) {
+      } else if (inFlutter &&
+          line.trim() == 'uses-material-design: true' &&
+          !hasAddedAssets) {
         enhancedLines.add(line);
         enhancedLines.add('');
         enhancedLines.add('  assets:');
@@ -198,8 +201,10 @@ class ProjectGenerator {
         enhancedLines.add('  # fonts:');
         enhancedLines.add('  #   - family: CustomFont');
         enhancedLines.add('  #     fonts:');
-        enhancedLines.add('  #       - asset: assets/fonts/CustomFont-Regular.ttf');
-        enhancedLines.add('  #       - asset: assets/fonts/CustomFont-Bold.ttf');
+        enhancedLines
+            .add('  #       - asset: assets/fonts/CustomFont-Regular.ttf');
+        enhancedLines
+            .add('  #       - asset: assets/fonts/CustomFont-Bold.ttf');
         enhancedLines.add('  #         weight: 700');
         hasAddedAssets = true;
       } else {
@@ -258,7 +263,7 @@ linter:
 
   String _generateReadmeContent(ProjectConfig config) {
     final templateDescription = _getTemplateDescription(config.template);
-    
+
     return '''
 # ${config.name}
 
@@ -350,7 +355,7 @@ Created with ❤️ using [fli](https://pub.dev/packages/fli) v1.0.1
 - ✅ Test structure
 
 Perfect for small to medium applications with straightforward requirements.''';
-      
+
       case 'feature_driven':
         return '''
 ### Feature Driven Template Features:
@@ -362,7 +367,7 @@ Perfect for small to medium applications with straightforward requirements.''';
 - ✅ Modular testing approach
 
 Ideal for medium to large applications with distinct feature sets.''';
-      
+
       case 'clean_architecture':
         return '''
 ### Clean Architecture Template Features:
@@ -374,7 +379,7 @@ Ideal for medium to large applications with distinct feature sets.''';
 - ✅ Comprehensive testing structure
 
 Best for enterprise applications with complex business logic.''';
-      
+
       case 'bloc_pattern':
         return '''
 ### BLoC Pattern Template Features:
@@ -386,7 +391,7 @@ Best for enterprise applications with complex business logic.''';
 - ✅ DevTools integration
 
 Perfect for applications with complex state management needs.''';
-      
+
       case 'provider_pattern':
         return '''
 ### Provider Pattern Template Features:
@@ -398,7 +403,7 @@ Perfect for applications with complex state management needs.''';
 - ✅ Testing utilities
 
 Great for medium complexity applications with simpler state management.''';
-      
+
       default:
         return 'A well-structured Flutter application with best practices built-in.';
     }
@@ -419,7 +424,7 @@ lib/
 ├── services/              # Business logic and API calls
 └── main.dart              # Application entry point
 ```''';
-      
+
       case 'feature_driven':
         return '''
 ```
@@ -435,7 +440,7 @@ lib/
 │   └── services/           # Shared business logic
 └── main.dart               # Application entry point
 ```''';
-      
+
       default:
         return '''
 ```

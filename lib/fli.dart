@@ -50,4 +50,8 @@
 /// ```
 library fli;
 
-export 'src/cli/fli_runner.dart' show runFli;
+// Conditional export based on platform capability
+// For platforms that support dart:io (non-web), export the full CLI functionality
+// For web/WASM platforms, provide a stub implementation
+export 'src/cli/fli_runner_stub.dart'
+    if (dart.library.io) 'src/cli/fli_runner.dart';
