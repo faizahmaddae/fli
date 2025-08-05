@@ -1,15 +1,25 @@
 name: fli
-description: A CLI tool for generating clean and standardized Flutter project structures
+description: A native CLI tool for generating clean and standardized Flutter project structures. Designed for command-line use on desktop platforms.
 version: 1.0.0
 homepage: https://github.com/faizahmaddae/fli
 repository: https://github.com/faizahmaddae/fli
 issue_tracker: https://github.com/faizahmaddae/fli/issues
 documentation: https://github.com/faizahmaddae/fli#readme
 
+# Help users and pub.dev understand this is a CLI tool
+topics:
+  - cli
+  - flutter
+  - generator
+  - scaffold
+  - project-structure
+  - command-line
+
 environment:
   sdk: '>=3.0.0 <4.0.0'
 
-# Platform support - CLI tools are designed for native platforms
+# This is a CLI tool that requires native platform capabilities
+# Web/WASM compatibility is not applicable for command-line tools
 platforms:
   linux:
   macos:
