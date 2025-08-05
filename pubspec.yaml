@@ -13,7 +13,6 @@ topics:
   - generator
   - scaffold
   - project-structure
-  - command-line
 
 environment:
   sdk: '>=3.0.0 <4.0.0'
