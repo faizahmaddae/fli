@@ -63,9 +63,10 @@ class FeatureDrivenTemplate extends ProjectTemplate {
   }
 
   Future<void> _createMainFile(String projectDir, String projectName) async {
+    final packageName = _snakeCase(projectName);
     final content = '''
 import 'package:flutter/material.dart';
-import 'app.dart';
+import 'package:$packageName/app.dart';
 
 void main() {
   runApp(const MyApp());
@@ -76,10 +77,11 @@ void main() {
   }
 
   Future<void> _createAppFile(String projectDir, String projectName) async {
+    final packageName = _snakeCase(projectName);
     final content = '''
 import 'package:flutter/material.dart';
-import 'core/theme/app_theme.dart';
-import 'features/home/presentation/pages/home_page.dart';
+import 'package:$packageName/core/theme/app_theme.dart';
+import 'package:$packageName/features/home/presentation/pages/home_page.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -133,10 +135,11 @@ class AppConstants {
   }
 
   Future<void> _createFeatureFiles(String projectDir) async {
+    final packageName = _snakeCase(path.basename(projectDir));
     // Home feature page
     final homePageContent = '''
 import 'package:flutter/material.dart';
-import '../widgets/home_content.dart';
+import 'package:$packageName/features/home/presentation/widgets/home_content.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -159,7 +162,7 @@ class HomePage extends StatelessWidget {
     // Home feature widget
     final homeContentContent = '''
 import 'package:flutter/material.dart';
-import '../../../../shared/widgets/custom_card.dart';
+import 'package:$packageName/shared/widgets/custom_card.dart';
 
 class HomeContent extends StatelessWidget {
   const HomeContent({super.key});
@@ -191,16 +194,16 @@ class HomeContent extends StatelessWidget {
 import 'package:flutter/material.dart';
 
 class CustomCard extends StatelessWidget {
-  final String title;
-  final String subtitle;
-  final VoidCallback? onTap;
-
   const CustomCard({
     super.key,
     required this.title,
     required this.subtitle,
     this.onTap,
   });
+
+  final String title;
+  final String subtitle;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -233,5 +236,9 @@ class CustomCard extends StatelessWidget {
     await File(path.join(
             projectDir, 'lib', 'shared', 'widgets', 'custom_card.dart'))
         .writeAsString(customCardContent);
+  }
+
+  String _snakeCase(String input) {
+    return input.toLowerCase();
   }
 }

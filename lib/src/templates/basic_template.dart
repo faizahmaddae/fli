@@ -290,13 +290,6 @@ class HomeScreen extends StatelessWidget {
 import 'package:flutter/material.dart';
 
 class CustomButton extends StatelessWidget {
-  final String text;
-  final VoidCallback? onPressed;
-  final Color? backgroundColor;
-  final Color? textColor;
-  final double? width;
-  final double? height;
-
   const CustomButton({
     super.key,
     required this.text,
@@ -306,6 +299,13 @@ class CustomButton extends StatelessWidget {
     this.width,
     this.height,
   });
+
+  final String text;
+  final VoidCallback? onPressed;
+  final Color? backgroundColor;
+  final Color? textColor;
+  final double? width;
+  final double? height;
 
   @override
   Widget build(BuildContext context) {
@@ -334,7 +334,6 @@ class CustomButton extends StatelessWidget {
   Future<void> _createTestFiles(String projectDir, String projectName) async {
     // Create widget test
     final widgetTestContent = '''
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:$projectName/app.dart';
 
