@@ -131,6 +131,14 @@ We welcome contributions! Please feel free to submit issues and pull requests.
 ### Contributing to Documentation
 Found something unclear or want to add examples? Check out our [documentation contribution guide](./doc/README.md#contributing).
 
+## ☕ Support
+
+If you find this project helpful and would like to support its development, consider buying me a coffee!
+
+[![Buy Me A Coffee](https://img.shields.io/badge/Buy%20Me%20A%20Coffee-support-yellow.svg?style=flat-square&logo=buy-me-a-coffee)](https://buymeacoffee.com/faizahmaddae)
+
+Your support helps maintain and improve this tool for the Flutter community.
+
 ## 📄 License
 
 MIT License - see LICENSE file for details.

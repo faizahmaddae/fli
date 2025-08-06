@@ -5,6 +5,8 @@ homepage: https://github.com/faizahmaddae/fli
 repository: https://github.com/faizahmaddae/fli
 issue_tracker: https://github.com/faizahmaddae/fli/issues
 documentation: https://github.com/faizahmaddae/fli#readme
+funding:
+  - https://buymeacoffee.com/faizahmaddae
 
 # Help users and pub.dev understand this is a CLI tool
 topics:
