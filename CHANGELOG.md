@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.1+1] - 2025-08-06
+
+### 💝 Added
+- **Buy Me a Coffee Support**: Added funding support to help maintain and improve the project
+  - Added support section in README.md with Buy Me a Coffee badge
+  - Added funding field in pubspec.yaml for better discoverability on pub.dev
+  - Encourages community support for ongoing development
+
 ## [1.1.1] - 2025-08-05
 
 ### 🔧 Fixed
