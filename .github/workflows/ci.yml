@@ -9,6 +9,7 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     
     steps:
     - uses: actions/checkout@v4
@@ -18,8 +19,28 @@ jobs:
       with:
         sdk: stable
     
+    - name: Setup Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        flutter-version: '3.32.0'
+        channel: 'stable'
+    
+    - name: Cache dependencies
+      uses: actions/cache@v3
+      with:
+        path: |
+          ~/.pub-cache
+        key: ${{ runner.os }}-pub-${{ hashFiles('**/pubspec.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-pub-
+    
     - name: Install dependencies
       run: dart pub get
+    
+    - name: Check Flutter installation
+      run: |
+        flutter --version
+        flutter doctor -v
     
     - name: Verify formatting
       run: dart format --output=none --set-exit-if-changed .
@@ -32,14 +53,53 @@ jobs:
     
     - name: Test CLI functionality
       run: |
-        mkdir -p /tmp/test_fli
-        cd /tmp/test_fli
+        # Test CLI help and templates commands
         dart run $GITHUB_WORKSPACE/bin/fli.dart --help
         dart run $GITHUB_WORKSPACE/bin/fli.dart templates
+        
+        # Create test directory
+        mkdir -p /tmp/test_fli
+        cd /tmp/test_fli
+        
+        # Test basic template
+        echo "Testing basic template..."
         dart run $GITHUB_WORKSPACE/bin/fli.dart create test_project --template=basic
+        if [ ! -d "test_project" ]; then
+          echo "Error: Basic template project was not created"
+          exit 1
+        fi
         ls -la test_project/
+        
+        # Test feature_driven template
+        echo "Testing feature_driven template..."
         dart run $GITHUB_WORKSPACE/bin/fli.dart create feature_project --template=feature_driven
+        if [ ! -d "feature_project" ]; then
+          echo "Error: Feature driven template project was not created"
+          exit 1
+        fi
         ls -la feature_project/
+        
+        echo "CLI functionality tests completed successfully!"
+    
+    - name: Validate generated projects
+      run: |
+        cd /tmp/test_fli
+        
+        # Validate basic template project
+        echo "Validating basic template project..."
+        cd test_project
+        flutter pub get
+        flutter analyze
+        cd ..
+        
+        # Validate feature_driven template project  
+        echo "Validating feature_driven template project..."
+        cd feature_project
+        flutter pub get
+        flutter analyze
+        cd ..
+        
+        echo "All generated projects validated successfully!"
 
   publish:
     needs: test
