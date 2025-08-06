@@ -5,6 +5,29 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.2] - 2025-08-06
+
+### 🔧 Fixed
+- **CI/CD Pipeline**: Complete CI workflow overhaul for better reliability
+  - Added Flutter SDK setup to CI environment 
+  - Added dependency caching for faster builds
+  - Added timeout protection to prevent hanging tests
+  - Enhanced CLI functionality testing with better error handling
+  - Added validation step for generated project quality
+
+### 🎨 Improved
+- **Template Code Quality**: Fixed all linting issues in generated projects
+  - Fixed constructor ordering in CustomButton and CustomCard widgets
+  - Removed unused imports in test files
+  - Converted relative imports to package imports in feature_driven template
+  - All generated projects now pass `flutter analyze` with zero issues
+
+### 🚀 Enhanced
+- **Developer Experience**: Generated projects now meet Flutter best practices
+  - Clean code with proper linting compliance
+  - Professional project structure
+  - Ready-to-use templates without warnings
+
 ## [1.1.1+1] - 2025-08-06
 
 ### 💝 Added
